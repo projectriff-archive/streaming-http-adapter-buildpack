@@ -1,0 +1,68 @@
+= Streaming HTTP Adapter Buildpack
+
+This buildpack contributes the riff streaming http adapter, so that subsequent
+buildpacks in a buildpack group (in particular, a riff function buildpack such
+as the https://github.com/projectriff/java-function-buildpack[java function buildpack]
+or the https://github.com/projectriff/node-function-buildpack[node function buildpack]) can benefit from
+first class request/reply http support, without having to implement it.
+
+For further details on the Streaming HTTP adapter, refer to the http://github.com/projectriff/http-streaming-adapter[http-streaming-adapter] project.
+
+== Usage
+To use this buildback, add it in a buildpack group, _before_ a function buildpack
+that wants to benefit from http support. For example, to enhance the java function buildpack,
+go from this definition:
+[source, toml]
+----
+[[groups]]
+  # java functions
+  buildpacks = [
+    { id = "org.cloudfoundry.openjdk",              version = 'latest', optional = true },
+    { id = "org.cloudfoundry.buildsystem",          version = 'latest', optional = true },
+    { id = "io.projectriff.java",                   version = 'latest' },
+  ]
+----
+to this:
+[source, toml]
+----
+[[groups]]
+  # java functions
+  buildpacks = [
+    { id = "org.cloudfoundry.openjdk",              version = 'latest', optional = true },
+    { id = "org.cloudfoundry.buildsystem",          version = 'latest', optional = true },
+    { id = "io.projectriff.streaming-http-adapter", version = 'latest', optional = true },
+    { id = "io.projectriff.java",                   version = 'latest' },
+  ]
+----
+
+In the *detect* phase of the interested buildpack, you can make sure that the streaming
+adapter is available and _e.g._ fail the build like so:
+[source,go]
+----
+if _, ok := d.BuildPlan[adapter.ProxyAvailable] ; !ok {
+    return false, errors.New("missing the http streaming adapter buildpack")
+}
+----
+
+To request that this buildpack contributes the adapter, add the `http-proxy` key
+(use const `Dependency` from the `adapter` package of this repo) to the buildplan:
+[source,go]
+----
+p := detect.BuildPlan[adapter.Dependency]
+if p.Metadata == nil {
+    p.Metadata = buildplan.Metadata{}
+}
+return buildplan.BuildPlan{/*other keys + */ adapter.Dependency: p}
+----
+
+In the *build* phase of the interested buildpack, rewrite process definitions by
+passing the launch metadata to the `Adapt()` function:
+[source,go]
+----
+return r.layers.WriteApplicationMetadata(adapter.Adapt(layers.Metadata{
+    Processes: layers.Processes{
+        layers.Process{Type: "function", Command: command},
+        layers.Process{Type: "web", Command: command},
+    },
+}))
+----
