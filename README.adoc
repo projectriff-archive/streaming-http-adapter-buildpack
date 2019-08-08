@@ -45,7 +45,7 @@ if _, ok := d.BuildPlan[adapter.ProxyAvailable] ; !ok {
 ----
 
 To request that this buildpack contributes the adapter, add the `http-proxy` key
-(use const `Dependency` from the `adapter` package of this repo) to the buildplan:
+(use const `Dependency` from the link:adapter/adapter.go[`adapter`] package of this repo) to the buildplan:
 [source,go]
 ----
 p := detect.BuildPlan[adapter.Dependency]
