@@ -11,9 +11,9 @@ test:
 	go test -v ./...
 
 artifactory/io/projectriff/streaming-http-adapter/io.projectriff.streaming-http-adapter: buildpack.toml $(GO_SOURCES)
-	rm -fR $@ 							&& \
-	./ci/package.sh						&& \
-	mkdir $@/latest 					&& \
+	rm -fR $@                           && \
+	./ci/package.sh                     && \
+	mkdir $@/latest                     && \
 	tar -C $@/latest -xzf $@/*/*.tgz
 
 .PHONY: clean
