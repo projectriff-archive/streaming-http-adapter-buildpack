@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-.idea/
-bin/
-dependency-cache/
+/.idea/
+/bin/
+/dependency-cache/
 .DS_Store
-artifactory/
-.vscode/
+/artifactory/
+/.vscode/
