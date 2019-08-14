@@ -28,7 +28,7 @@ id      = "streaming-http-adapter"
 name    = "riff Streaming HTTP Adapter"
 version = "0.0.1"
 uri     = "https://github.com/projectriff/streaming-http-adapter/releases/download/v0.0.1-alpha/streaming-http-adapter-linux-amd64.tgz"
-sha256  = "8d7ed96887da60cc63e039b706df3df2f53c9e0f3399d02df775ffaab942225c"
+sha256  = "79db27492dd7717272a072201d978152b1ef84cea4a2c0f4f40cc53c9a947a85"
 stacks  = [
   "io.buildpacks.stacks.bionic",
   "org.cloudfoundry.stacks.cflinuxfs3",
